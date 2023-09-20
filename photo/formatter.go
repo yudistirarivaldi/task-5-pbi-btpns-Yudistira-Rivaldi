@@ -7,7 +7,7 @@ type PhotoFormatter struct {
 	Title      string `json:"title"`
 	Caption    string `json:"caption"`
 	PhotoURL   string `json:"photo_url"`
-	UserID     string `json:"user_id"`
+	UserID     int    `json:"user_id"`
 }
 
 func FormatPhoto(photo Photo) PhotoFormatter {
@@ -16,7 +16,7 @@ func FormatPhoto(photo Photo) PhotoFormatter {
 		Title:      photo.Title,
 		Caption: 	photo.Caption,
 		PhotoURL:   photo.PhotoURL,
-		UserID:   	photo.AvatarFileName,
+		UserID:   	photo.UserID,
 	}
 
 	return formatter
