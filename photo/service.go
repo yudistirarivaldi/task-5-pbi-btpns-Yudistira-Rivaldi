@@ -1,7 +1,7 @@
 package photo
 
 type Service interface {
-	CreatePhoto(input CreatePhotoInput) (Photo, error)
+	CreatePhoto(input CreatePhotoInput, fileLocation string) (Photo, error)
 }
 
 type service struct {
@@ -12,12 +12,13 @@ func NewService(repository Repository) *service {
 	return &service{repository}
 }
 
-func (s *service) CreatePhoto(input CreatePhotoInput) (Photo, error) {
+func (s *service) CreatePhoto(input CreatePhotoInput, fileLocation string) (Photo, error) {
 
 	photo := Photo{}
 	photo.Title = input.Title
 	photo.Caption = input.Caption
-	photo.PhotoURL = input.PhotoURL
+	photo.PhotoURL = fileLocation
+	photo.UserID = input.User.ID
 
 	newPhoto, err := s.repository.Save(photo)
 	if err != nil {

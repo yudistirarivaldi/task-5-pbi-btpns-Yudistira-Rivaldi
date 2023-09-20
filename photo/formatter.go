@@ -1,6 +1,6 @@
 package photo
 
-// fungsi struct ini agar mengubah menjadi format json
+
 
 type PhotoFormatter struct {
 	ID         int    `json:"id"`

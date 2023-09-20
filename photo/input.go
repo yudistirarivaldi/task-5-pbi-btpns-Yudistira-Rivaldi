@@ -1,9 +1,9 @@
 package photo
 
+import "crowdfunding/user"
+
 type CreatePhotoInput struct {
-	ID       int    `json:"id"`
-	Title    string `json:"title" binding:"required"`
-	Caption  string `json:"caption" binding:"required"`
-	PhotoURL string `json:"photo_url" binding:"required"`
-	UserID   string `json:"user_id"`
+	Title    string `form:"title" binding:"required"`
+	Caption  string `form:"caption" binding:"required"`
+	User     user.User
 }

@@ -4,6 +4,7 @@ import (
 	"crowdfunding/auth"
 	"crowdfunding/handler"
 	"crowdfunding/helper"
+	"crowdfunding/photo"
 	"crowdfunding/user"
 	"fmt"
 	"log"
@@ -28,13 +29,15 @@ func main() {
 	fmt.Println("Connection to Database Successful")
 
 	userRepository := user.NewRepository(db)
+	photoRepository := photo.NewRepository(db)
 
 	userService := user.NewService(userRepository)
+	photoService := photo.NewService(photoRepository)
 	
 	authService := auth.NewService()
 	
-
 	userHandler := handler.NewUserHandler(userService, authService)
+	photoHandler := handler.NewPhotoHandler(photoService)
 	
 	router := gin.Default()
 	router.Use(cors.Default())
@@ -44,6 +47,8 @@ func main() {
 	api.POST("/register", userHandler.RegisterUser)
 	api.POST("/login", userHandler.Login)
 	api.GET("/users/fetch", authMiddleware(authService, userService), userHandler.FetchUser)
+
+	api.POST("/photo", authMiddleware(authService, userService), photoHandler.CreatePhoto)
 
 	router.Run()
 
