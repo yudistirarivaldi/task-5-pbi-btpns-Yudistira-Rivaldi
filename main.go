@@ -46,6 +46,7 @@ func main() {
 
 	api.POST("/register", userHandler.RegisterUser)
 	api.POST("/login", userHandler.Login)
+	api.PUT("/update/:id", authMiddleware(authService, userService), userHandler.UpdateUser)
 	api.GET("/users/fetch", authMiddleware(authService, userService), userHandler.FetchUser)
 
 	api.POST("/photo", authMiddleware(authService, userService), photoHandler.CreatePhoto)

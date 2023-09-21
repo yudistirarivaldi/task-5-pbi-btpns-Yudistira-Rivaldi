@@ -12,6 +12,7 @@ type Service interface {
 	IsEmailAvailable(email string) (User, error)
 	GetUserByID(ID int) (User, error)
 	GetAllUsers() ([]User, error)
+	UpdateUser(id GetId, input UpdateUserInput) (User, error)
 
 }
 
@@ -104,5 +105,35 @@ func (s *service) GetAllUsers() ([]User, error) {
 	}
 
 	return users, nil
+
+}
+
+func (s *service) UpdateUser(id GetId, input UpdateUserInput) (User, error) {
+
+	user, err := s.repository.FindByID(id.ID)
+	if err != nil {
+		return user, err
+	}
+
+	if (user.ID != input.UserLogin.ID) {
+		return user, errors.New("Not an owner of the user")
+	}
+
+	user.Name = input.Name
+	user.Email = input.Email
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.MinCost)
+	if err != nil {
+		return user, err
+	}
+
+	user.PasswordHash = string(passwordHash) 
+
+	updatedUser, err := s.repository.Update(user)
+	if err != nil {
+		return updatedUser, err
+	}
+
+	return updatedUser, nil
+
 
 }
