@@ -30,7 +30,7 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 
 		errorMessage := gin.H{ "errors" : errors }
 
-		response := helper.APIResponse("Register user gagal di tambahkan", http.StatusUnprocessableEntity, "error", errorMessage)
+		response := helper.APIResponse("Register user failed", http.StatusUnprocessableEntity, "error", errorMessage)
 		c.JSON(http.StatusUnprocessableEntity, response)
 		return 
 	}
@@ -148,6 +148,33 @@ func (h *userHandler) UpdateUser(c *gin.Context) {
 	}
 
 	response := helper.APIResponse("Success to update campaign", http.StatusOK, "success", updatedUser)
+	c.JSON(http.StatusOK, response)
+
+
+}
+
+func (h *userHandler) DeleteUser(c *gin.Context) {
+
+	var id user.GetId
+	err := c.ShouldBindUri(&id)
+	if err != nil {
+		response := helper.APIResponse("Failed to delete user", http.StatusBadRequest, "error", err)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(user.User)
+
+	_, err = h.userService.Delete(id.ID, currentUser.ID)
+	if err != nil {
+		errorMessage := gin.H{"errors": err.Error()}
+
+		response := helper.APIResponse("Failed to delete user", http.StatusForbidden, "error", errorMessage)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse("Success to delete campaign", http.StatusOK, "success", "Success deleted user")
 	c.JSON(http.StatusOK, response)
 
 

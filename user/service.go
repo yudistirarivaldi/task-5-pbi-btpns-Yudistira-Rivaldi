@@ -11,6 +11,7 @@ type Service interface {
 	LoginUser(input LoginInput) (User, error)
 	IsEmailAvailable(email string) (User, error)
 	GetUserByID(ID int) (User, error)
+	Delete(ID int, UserID int) (User, error)
 	GetAllUsers() ([]User, error)
 	UpdateUser(id GetId, input UpdateUserInput) (User, error)
 
@@ -56,7 +57,7 @@ func (s *service) LoginUser(input LoginInput) (User, error) {
 	}
 
 	if user.ID == 0 {
-		return user, errors.New("User tidak di temukan")
+		return user, errors.New("User not found")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
@@ -75,7 +76,7 @@ func (s *service) IsEmailAvailable(email string) (User, error) {
 	}
 
 	if(user.Email != "") {
-		return user, errors.New("User sudah ada")
+		return user, errors.New("User already exist")
 	}
 
 	return user, nil
@@ -90,10 +91,30 @@ func (s *service) GetUserByID(ID int) (User, error) {
 	}
 
 	if user.ID == 0 {
-		return user, errors.New("User tidak di temukan")
+		return user, errors.New("User not found")
 	}
 
 	return user, nil
+
+}
+
+func (s *service) Delete(ID int, UserID int) (User, error) {
+
+	user, err := s.repository.FindByID(ID)
+	if err != nil {
+		return user, err
+	}
+
+	if user.ID  != UserID {
+		return user, errors.New("Not an owner of the user")
+	}
+
+	deletedUser, err := s.repository.Delete(user.ID)
+	if err != nil {
+		return deletedUser, err
+	}
+
+	return deletedUser, nil
 
 }
 
@@ -115,6 +136,7 @@ func (s *service) UpdateUser(id GetId, input UpdateUserInput) (User, error) {
 		return user, err
 	}
 
+	
 	if (user.ID != input.UserLogin.ID) {
 		return user, errors.New("Not an owner of the user")
 	}
