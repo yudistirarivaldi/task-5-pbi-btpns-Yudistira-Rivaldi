@@ -1,7 +1,12 @@
 package photo
 
+import (
+	"errors"
+)
+
 type Service interface {
 	CreatePhoto(input CreatePhotoInput, fileLocation string) (Photo, error)
+	UpdatePhoto(id GetId, input UpdatePhotoInput, fileLocation string) (Photo, error)
 	GetPhotos() ([]Photo, error)
 }
 
@@ -40,3 +45,29 @@ func (s *service) GetPhotos() ([]Photo, error) {
 
 }
 
+func (s *service) UpdatePhoto(id GetId, input UpdatePhotoInput, fileLocation string) (Photo, error) {
+
+	photo, err := s.repository.FindByID(id.ID)
+	if err != nil {
+		return photo, err
+	}
+
+	if photo.UserID != input.User.ID {
+		return photo, errors.New("Not an owner of the user")
+	}
+
+	photo.Caption = input.Caption
+	photo.Title = input.Title
+	photo.PhotoURL = fileLocation
+	
+	if err != nil {
+		return photo, err
+	}
+
+	updatedUser, err := s.repository.Update(photo)
+	if err != nil {
+		return updatedUser, err
+	}
+
+	return updatedUser, nil
+}

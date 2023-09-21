@@ -156,6 +156,4 @@ func (s *service) UpdateUser(id GetId, input UpdateUserInput) (User, error) {
 	}
 
 	return updatedUser, nil
-
-
 }
