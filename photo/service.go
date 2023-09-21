@@ -2,6 +2,7 @@ package photo
 
 type Service interface {
 	CreatePhoto(input CreatePhotoInput, fileLocation string) (Photo, error)
+	GetPhotos() ([]Photo, error)
 }
 
 type service struct {
@@ -27,3 +28,15 @@ func (s *service) CreatePhoto(input CreatePhotoInput, fileLocation string) (Phot
 
 	return newPhoto, nil
 }
+
+func (s *service) GetPhotos() ([]Photo, error) {
+
+	photos, err := s.repository.FindAll()
+	if err != nil {
+		return photos, err
+	}
+
+	return photos, nil
+
+}
+

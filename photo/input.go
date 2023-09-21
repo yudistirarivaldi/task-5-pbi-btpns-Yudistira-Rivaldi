@@ -7,3 +7,7 @@ type CreatePhotoInput struct {
 	Caption  string `form:"caption" binding:"required"`
 	User     user.User
 }
+
+type GetId struct {
+
+}

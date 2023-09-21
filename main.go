@@ -51,6 +51,8 @@ func main() {
 	api.DELETE("/delete/:id", authMiddleware(authService, userService), userHandler.DeleteUser)
 
 	api.POST("/photo", authMiddleware(authService, userService), photoHandler.CreatePhoto)
+	api.GET("/photo", photoHandler.GetPhotos)
+	
 
 	router.Run()
 

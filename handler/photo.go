@@ -80,6 +80,18 @@ func (h *photoHandler) CreatePhoto(c *gin.Context) {
 	response := helper.APIResponse("photo successfuly uploaded", http.StatusOK, "success", data)
 
 	c.JSON(http.StatusOK, response)
+}
 
+func (h *photoHandler) GetPhotos(c *gin.Context) {
+
+	photos, err := h.service.GetPhotos()
+	if err != nil {
+		response := helper.APIResponse("Error to get photos", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	response := helper.APIResponse("List of photo", http.StatusOK, "success", photo.FormatPhotos(photos))
+	c.JSON(http.StatusOK, response)
 
 }
