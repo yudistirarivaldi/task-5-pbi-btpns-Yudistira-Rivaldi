@@ -8,6 +8,7 @@ type Service interface {
 	CreatePhoto(input CreatePhotoInput, fileLocation string) (Photo, error)
 	UpdatePhoto(id GetId, input UpdatePhotoInput, fileLocation string) (Photo, error)
 	GetPhotos() ([]Photo, error)
+	Delete(ID int, UserID int) (Photo, error)
 }
 
 type service struct {
@@ -42,6 +43,26 @@ func (s *service) GetPhotos() ([]Photo, error) {
 	}
 
 	return photos, nil
+
+}
+
+func (s *service) Delete(ID int, UserID int) (Photo, error) {
+
+	photo, err := s.repository.FindByID(ID)
+	if err != nil {
+		return photo, err
+	}
+
+	if photo.UserID  != UserID {
+		return photo, errors.New("Not an owner of the user")
+	}
+
+	deletedPhoto, err := s.repository.Delete(photo.ID)
+	if err != nil {
+		return deletedPhoto, err
+	}
+
+	return deletedPhoto, nil
 
 }
 

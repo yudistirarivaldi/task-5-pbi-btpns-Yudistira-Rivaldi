@@ -164,3 +164,30 @@ func (h *photoHandler) UpdatePhoto(c *gin.Context) {
 
 
 }
+
+func (h *photoHandler) Delete(c *gin.Context) {
+
+	var id photo.GetId
+	err := c.ShouldBindUri(&id)
+	if err != nil {
+		response := helper.APIResponse("Failed to delete photo", http.StatusBadRequest, "error", err)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(user.User)
+
+	_, err = h.service.Delete(id.ID, currentUser.ID)
+	if err != nil {
+		errorMessage := gin.H{"errors": err.Error()}
+
+		response := helper.APIResponse("Failed to delete photo", http.StatusForbidden, "error", errorMessage)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse("Success to delete photo", http.StatusOK, "success", "Success deleted photo")
+	c.JSON(http.StatusOK, response)
+
+
+}

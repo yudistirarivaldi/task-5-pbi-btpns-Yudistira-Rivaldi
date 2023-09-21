@@ -7,6 +7,7 @@ type Repository interface {
 	Update(photo Photo) (Photo, error)
 	FindByID(ID int) (Photo, error)
 	FindAll() ([]Photo, error)
+	Delete(ID int) (Photo, error)
 }
 
 type repository struct {
@@ -59,3 +60,15 @@ func (r *repository) FindByID(ID int) (Photo, error) {
 	return photo, nil
 
 }
+
+func (r *repository) Delete(ID int) (Photo, error) {
+	var photo Photo
+
+	err := r.db.Where("ID = ?", ID).Delete(&photo).Error
+	if err != nil {
+		return photo, err
+	}
+
+	return photo, nil
+
+}	
