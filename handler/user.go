@@ -147,7 +147,7 @@ func (h *userHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	response := helper.APIResponse("Success to update campaign", http.StatusOK, "success", updatedUser)
+	response := helper.APIResponse("Success to update user", http.StatusOK, "success", updatedUser)
 	c.JSON(http.StatusOK, response)
 
 
@@ -174,7 +174,7 @@ func (h *userHandler) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	response := helper.APIResponse("Success to delete campaign", http.StatusOK, "success", "Success deleted user")
+	response := helper.APIResponse("Success to delete user", http.StatusOK, "success", "Success deleted user")
 	c.JSON(http.StatusOK, response)
 
 
